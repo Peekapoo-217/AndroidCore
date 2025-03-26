@@ -62,4 +62,9 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    suspend fun isPhoneNumberExists(phone : String): Boolean{
+        return repository.isPhoneNumberExists(phone)
+    }
+
+
 }
