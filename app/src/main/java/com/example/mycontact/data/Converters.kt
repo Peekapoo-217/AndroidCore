@@ -5,7 +5,7 @@ import androidx.room.TypeConverter
 class Converters {
     @TypeConverter
     fun fromList(list: List<String>): String {
-        return list.joinToString("| ")
+        return list.joinToString("|")
     }
 
     @TypeConverter

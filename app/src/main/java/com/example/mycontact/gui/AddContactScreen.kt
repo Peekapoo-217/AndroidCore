@@ -68,7 +68,7 @@ fun AddContactScreen(viewModel: ContactViewModel, onBack: () -> Unit) {
                         if (exists) {
                             phoneError = "Số điện thoại đã tồn tại"
                         } else {
-                            // Tạo Contact mới
+                            // Tạo Contact mớ   i
                             val newContact = Contact(
                                 id = 0, // Room sẽ tự generate ID
                                 name = name,

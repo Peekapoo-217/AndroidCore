@@ -21,7 +21,7 @@ fun ContactListScreen(viewModel: ContactViewModel, navController: NavController)
     val allContacts by viewModel.allContacts.observeAsState(emptyList())
 
     val searchQuery by viewModel.searchQuery.collectAsState()
- /*   val filteredContacts by remember { derivedStateOf { viewModel.getFilteredContacts() } }*/
+
     val filteredContacts = viewModel.getFilteredContacts(allContacts)
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Danh Bạ Điện Thoại", style = MaterialTheme.typography.headlineSmall)
