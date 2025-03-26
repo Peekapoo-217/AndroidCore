@@ -4,7 +4,6 @@ import Route
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -64,10 +63,14 @@ class MainActivity : ComponentActivity() {
                                 val contactId = backStackEntry.arguments?.getString("contactId")?.toIntOrNull()
 
                                 //Tìm contact từ list đã observe
-                                val contact = allContacts.find { it.id == contactId }
+                                val contact = allContacts.find { it.contact.id == contactId }
 
                                 contact?.let {
-                                    ContactDetailScreen(it, navController)
+                                    ContactDetailScreen(
+                                        contact = it.contact,
+                                        contactWithPhones = it,
+                                        navController = navController
+                                    )
                                 }
                             }
                         }

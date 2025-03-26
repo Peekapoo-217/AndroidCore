@@ -1,19 +1,32 @@
+import com.example.mycontact.data.PhoneNumberDAO
 import com.example.mycontact.data.UserDAO
 import com.example.mycontact.entities.Contact
+import com.example.mycontact.entities.ContactWithPhones
+import com.example.mycontact.entities.PhoneNumber
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
-class UserRepository(private val userDAO: UserDAO) {
+class UserRepository(private val userDAO: UserDAO, private val phoneNumberDAO: PhoneNumberDAO) {
 
     // Lấy toàn bộ contact
-    val allUsers: Flow<List<Contact>> = userDAO.getAllUsers()
+    val allUsers: Flow<List<ContactWithPhones>> = userDAO.getAllUsers()
 
-    suspend fun insert(contact: Contact) {
-        userDAO.insert(contact)
+    suspend fun insert(contact: Contact, phone: List<String>) {
+        val contactId =
+            userDAO.insert(contact)
+        phone.forEach { number ->
+            phoneNumberDAO.insert(PhoneNumber(contactId = contactId.toInt(), number = number))
+        }
     }
 
-    suspend fun update(contact: Contact) {
+    suspend fun update(contact: Contact, phones: List<String>) {
         userDAO.update(contact)
+
+        phoneNumberDAO.deleteAllPhoneForContact(contact.id)
+
+        phones.forEach {
+            number -> phoneNumberDAO.insert(PhoneNumber(contactId = contact.id, number = number))
+        }
     }
 
     suspend fun delete(contact: Contact) {
@@ -21,9 +34,6 @@ class UserRepository(private val userDAO: UserDAO) {
     }
 
     suspend fun isPhoneNumberExists(phone: String): Boolean {
-        val contactList = userDAO.getAllUsers().first()
-        return contactList.any { contact ->
-            contact.phoneNumber.any { it == phone }
-        }
+        return phoneNumberDAO.findPhoneNumber(phone) != null
     }
 }

@@ -1,5 +1,3 @@
-
-
 package com.example.mycontact.gui
 
 import androidx.compose.foundation.layout.*
@@ -12,12 +10,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mycontact.entities.Contact
+import com.example.mycontact.entities.ContactWithPhones
 import com.example.mycontact.utils.isValidPhoneNumber
 import com.example.mycontact.utils.makeCall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactDetailScreen(contact: Contact, navController: NavController) {
+fun ContactDetailScreen(
+    contact: Contact,
+    contactWithPhones: ContactWithPhones,
+    navController: NavController
+) {
     val context = LocalContext.current
 
     Scaffold(
@@ -41,23 +44,22 @@ fun ContactDetailScreen(contact: Contact, navController: NavController) {
             Text("Tên: ${contact.name}", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
 
-            contact.phoneNumber.filter { isValidPhoneNumber(it) }.forEach { phoneNumber ->
-                val isValid = isValidPhoneNumber(phoneNumber)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(phoneNumber, modifier = Modifier.weight(1f))
+            contactWithPhones.phone
+                .filter { isValidPhoneNumber(it.number) }
+                .forEach { phone ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(phone.number, modifier = Modifier.weight(1f))
 
-                    if(isValid){
-                        Button(onClick = { makeCall(context, phoneNumber) }) {
-                        Text("Gọi")
-                    }
+                        Button(onClick = { makeCall(context, phone.number) }) {
+                            Text("Gọi")
+                        }
                     }
                 }
-            }
         }
     }
 }

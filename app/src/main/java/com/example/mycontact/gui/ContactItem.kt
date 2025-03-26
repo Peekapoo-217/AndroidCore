@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 fun ContactItem(
     contact: Contact,
     viewModel: ContactViewModel,
+    phoneList: List<String>,
     onEdit: () -> Unit,
     navController: NavController
 ) {
@@ -70,9 +71,12 @@ fun ContactItem(
             state = dismissState,
             backgroundContent = {},
             content = {
-                ContactCard(contact = contact) {
-                    navController.navigate(Route.contactDetailRoute(contact.id))
-                }
+                ContactCard(
+                    contact = contact, phoneList = phoneList,
+                    onClick = {
+                        navController.navigate(Route.contactDetailRoute(contact.id))
+                    }
+                )
             }
         )
     }

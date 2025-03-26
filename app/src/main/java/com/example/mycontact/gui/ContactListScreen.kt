@@ -12,17 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mycontact.viewmodel.ContactViewModel
-import com.example.mycontact.entities.Contact
+import com.example.mycontact.entities.ContactWithPhones
 
 @Composable
 fun ContactListScreen(viewModel: ContactViewModel, navController: NavController) {
-    var selectedContact by remember { mutableStateOf<Contact?>(null) }
+    var selectedContact by remember { mutableStateOf<ContactWithPhones?>(null) }
 
     val allContacts by viewModel.allContacts.observeAsState(emptyList())
 
     val searchQuery by viewModel.searchQuery.collectAsState()
 
     val filteredContacts = viewModel.getFilteredContacts(allContacts)
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Danh Bạ Điện Thoại", style = MaterialTheme.typography.headlineSmall)
         OutlinedTextField(
@@ -36,13 +37,25 @@ fun ContactListScreen(viewModel: ContactViewModel, navController: NavController)
 
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn {
-            items(filteredContacts) { contact ->
-                ContactItem(contact, viewModel, onEdit = { selectedContact = contact }, navController)
+            items(filteredContacts) { contactWithPhones ->
+                ContactItem(
+                    contact = contactWithPhones.contact,
+                    phoneList = contactWithPhones.phone.map { it.number },
+                    viewModel = viewModel,
+                    onEdit = { selectedContact = contactWithPhones },
+                    navController = navController
+                )
             }
         }
+
     }
     selectedContact?.let {
-        EditContactDialog(it, viewModel) { selectedContact = null }
+        EditContactDialog(
+            contact = it.contact,
+            phoneList = it.phone.map { phone -> phone.number },
+            viewModel = viewModel,
+            onDismiss = { selectedContact = null }
+        )
     }
 }
 

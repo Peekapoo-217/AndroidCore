@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mycontact.entities.Contact
+import com.example.mycontact.entities.ContactWithPhones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
     private val repository: UserRepository
 
     // Expose LiveData to UI
-    val allContacts: LiveData<List<Contact>>
+    val allContacts: LiveData<List<ContactWithPhones>>
 
     // Search query
     private val _searchQuery = MutableStateFlow("")
@@ -27,18 +28,23 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         val contactDao = ContactDatabase.getDatabase(application).contactDAO()
-        repository = UserRepository(contactDao)
+        val phoneDao = ContactDatabase.getDatabase(application).phoneNumberDAO()
+        repository = UserRepository(contactDao, phoneDao)
         allContacts = repository.allUsers.asLiveData()
     }
 
     // Insert contact
-    fun insertContact(contact: Contact) = viewModelScope.launch {
-        repository.insert(contact)
+    fun insertContact(contact: Contact, phone: List<String>) = viewModelScope.launch {
+        repository.insert(contact, phone)
     }
 
-    fun updateContact(updatedContact: Contact) = viewModelScope.launch {
+/*    fun updateContact(updatedContact: Contact) = viewModelScope.launch {
         repository.update(updatedContact)
-    }
+    }*/
+    fun updateContactWithPhones(contact: Contact, phones: List<String>) = viewModelScope.launch{
+
+        repository.update(contact, phones)
+}
 
     // Delete contact
     fun deleteContact(contact: Contact) = viewModelScope.launch {
@@ -50,17 +56,17 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
         _searchQuery.value = query
     }
 
-    // Filtered contacts (optional)
-    fun getFilteredContacts(list: List<Contact>): List<Contact> {
+    fun getFilteredContacts(list: List<ContactWithPhones>): List<ContactWithPhones> {
         return if (_searchQuery.value.isBlank()) {
             list
         } else {
-            list.filter { contact ->
-                contact.name.contains(_searchQuery.value, ignoreCase = true) ||
-                        contact.phoneNumber.any { it.contains(_searchQuery.value, ignoreCase = true) }
+            list.filter { contactWithPhones ->
+                contactWithPhones.contact.name.contains(_searchQuery.value, ignoreCase = true) ||
+                        contactWithPhones.phone.any { it.number.contains(_searchQuery.value, ignoreCase = true) }
             }
         }
     }
+
 
     suspend fun isPhoneNumberExists(phone : String): Boolean{
         return repository.isPhoneNumberExists(phone)

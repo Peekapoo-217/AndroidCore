@@ -9,9 +9,9 @@ import com.example.mycontact.entities.Contact
 import com.example.mycontact.viewmodel.ContactViewModel
 
 @Composable
-fun EditContactDialog(contact: Contact, viewModel: ContactViewModel, onDismiss: () -> Unit) {
+fun EditContactDialog(contact: Contact, viewModel: ContactViewModel,phoneList: List<String>, onDismiss: () -> Unit) {
     var newName by remember { mutableStateOf(contact.name) }
-    var newPhones by remember { mutableStateOf(contact.phoneNumber.toMutableStateList()) }
+    var newPhones by remember { mutableStateOf(phoneList.toMutableStateList()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -56,13 +56,9 @@ fun EditContactDialog(contact: Contact, viewModel: ContactViewModel, onDismiss: 
             }
         },        confirmButton = {
             Button(onClick = {
-                val updatedContact = Contact(
-                    id = contact.id,
-                    name = newName,
-                    phoneNumber = newPhones.toList()
-                )
+                val updatedContact = contact.copy(name = newName)
 
-                viewModel.updateContact(updatedContact)
+                viewModel.updateContactWithPhones(updatedContact, newPhones.toList())
 
                 onDismiss()
             }) {
