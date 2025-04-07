@@ -82,6 +82,28 @@ fun ContactItem(
     }
 
 
+
+/*    // Sử dụng Box để hiển thị thông tin liên hệ
+    Box(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
+        ContactCard(
+            contact = contact,
+            phoneList = phoneList,
+            onClick = {
+                navController.navigate(Route.contactDetailRoute(contact.id))
+            }
+        )
+
+        // Thêm nút bấm để xóa liên hệ
+        Button(
+            onClick = { showDeleteDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        ) {
+            Text("Xóa liên hệ")
+        }
+    }*/
+
     // Hộp thoại xác nhận xóa
     if (showDeleteDialog) {
         ConfirmDeleteDialog(

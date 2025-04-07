@@ -1,6 +1,7 @@
 package com.example.mycontact
 
 import Route
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,13 +32,26 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val permissions = arrayOf(
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.WRITE_CONTACTS
+        )
+
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 1)
+        }
+
 
         setContent {
             MyContactTheme {
                 val navController = rememberNavController()
 
                 val contactViewModel: ContactViewModel = viewModel(factory = ContactViewModelFactory(application))
+
 
                 // Observe danh bạ từ ViewModel
                 val allContacts by contactViewModel.allContacts.observeAsState(emptyList())
@@ -52,7 +68,14 @@ class MainActivity : ComponentActivity() {
                         NavHost(navController = navController, startDestination = Route.ContactList) {
 
                             composable(Route.ContactList) {
-                                ContactListScreen(viewModel = contactViewModel, navController)
+                                ContactListScreen(
+                                    viewModel = contactViewModel,
+                                    navController = navController,
+                                    onImportContact = {
+                                        contactViewModel.importSystemContacts(applicationContext)
+                                    }
+                                )
+
                             }
 
                             composable(Route.AddContact) {

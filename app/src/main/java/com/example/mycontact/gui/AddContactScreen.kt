@@ -9,6 +9,8 @@ import com.example.mycontact.entities.Contact
 import com.example.mycontact.viewmodel.ContactViewModel
 import com.example.mycontact.utils.Validators
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
+import com.example.mycontact.utils.addContactToSystem
 import kotlinx.coroutines.launch
 
 
@@ -18,6 +20,8 @@ fun AddContactScreen(viewModel: ContactViewModel, onBack: () -> Unit) {
     var phoneNumber by remember { mutableStateOf("") }
     var phoneError by remember { mutableStateOf<String?>(null) }
     var isPhoneFocused by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
     var duplicateError by remember { mutableStateOf<String?>(null) }
@@ -68,15 +72,11 @@ fun AddContactScreen(viewModel: ContactViewModel, onBack: () -> Unit) {
                         if (exists) {
                             phoneError = "Số điện thoại đã tồn tại"
                         } else {
-                            // Tạo Contact mớ   i
-/*                            val newContact = Contact(
-                                id = 0, // Room sẽ tự generate ID
-                                name = name,
-                                phoneNumber = listOf(phoneNumber)
-                            )*/
                             val newContact = Contact(id = 0, name = name)
 
                             viewModel.insertContact(newContact, listOf(phoneNumber))
+                            addContactToSystem(context = context, name = name, phone = phoneNumber)
+
 
                             name = ""
                             phoneNumber = ""
@@ -94,3 +94,4 @@ fun AddContactScreen(viewModel: ContactViewModel, onBack: () -> Unit) {
 
     }
 }
+

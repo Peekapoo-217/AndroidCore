@@ -4,7 +4,6 @@ import com.example.mycontact.entities.Contact
 import com.example.mycontact.entities.ContactWithPhones
 import com.example.mycontact.entities.PhoneNumber
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 class UserRepository(private val userDAO: UserDAO, private val phoneNumberDAO: PhoneNumberDAO) {
 

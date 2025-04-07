@@ -15,7 +15,7 @@ import com.example.mycontact.viewmodel.ContactViewModel
 import com.example.mycontact.entities.ContactWithPhones
 
 @Composable
-fun ContactListScreen(viewModel: ContactViewModel, navController: NavController) {
+fun ContactListScreen(viewModel: ContactViewModel, navController: NavController, onImportContact: () -> Unit) {
     var selectedContact by remember { mutableStateOf<ContactWithPhones?>(null) }
 
     val allContacts by viewModel.allContacts.observeAsState(emptyList())
@@ -48,7 +48,18 @@ fun ContactListScreen(viewModel: ContactViewModel, navController: NavController)
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onImportContact,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Nhập danh bạ từ điện thoại")
+        }
+
     }
+
+
     selectedContact?.let {
         EditContactDialog(
             contact = it.contact,

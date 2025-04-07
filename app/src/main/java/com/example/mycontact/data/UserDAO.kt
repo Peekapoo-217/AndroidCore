@@ -1,6 +1,5 @@
 package com.example.mycontact.data
 
-import android.provider.ContactsContract.CommonDataKinds.Phone
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
