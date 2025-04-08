@@ -101,6 +101,7 @@ package com.example.mycontact.viewmodel
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
@@ -123,6 +124,22 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
+
+    private val _selectedPhoneNumbers = mutableStateListOf<String>()
+    val selectedPhoneNumbers: List<String> get() = _selectedPhoneNumbers
+
+    fun togglePhoneSelection(number: String) {
+        if (_selectedPhoneNumbers.contains(number)) {
+            _selectedPhoneNumbers.remove(number)
+        } else {
+            _selectedPhoneNumbers.add(number)
+        }
+    }
+
+    fun clearSelectedPhones() {
+        _selectedPhoneNumbers.clear()
+    }
+
 
     init {
         val contactDao = ContactDatabase.getDatabase(application).contactDAO()
@@ -161,7 +178,7 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ✅ GỌI chính xác theo SystemContact (đã sửa)
+    // GỌI chính xác theo SystemContact (đã sửa)
     fun importSystemContacts(context: Context) = viewModelScope.launch {
         val contacts = readSystemContacts(context)
 
@@ -171,7 +188,7 @@ class ContactViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ✅ Gợi ý thêm đồng bộ thông minh từ hệ thống
+    // Gợi ý thêm đồng bộ thông minh từ hệ thống
     fun syncFromSystem(context: Context) = viewModelScope.launch {
         syncFromSystemContacts(context)
     }

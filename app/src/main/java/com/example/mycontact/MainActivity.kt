@@ -9,10 +9,12 @@ import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mycontact.gui.AddContactScreen
 import com.example.mycontact.gui.ContactDetailScreen
 import com.example.mycontact.gui.ContactListScreen
+import com.example.mycontact.gui.SendSmsScreen
 import com.example.mycontact.ui.theme.MyContactTheme
 import com.example.mycontact.viewmodel.ContactViewModel
 import com.example.mycontact.viewmodel.ContactViewModelFactory
@@ -56,15 +59,42 @@ class MainActivity : ComponentActivity() {
                 val allContacts by contactViewModel.allContacts.observeAsState(emptyList())
 
                 Scaffold(
-                    floatingActionButton = {
+/*                    floatingActionButton = {
                         FloatingActionButton(onClick = { navController.navigate(Route.AddContact) }) {
                             Icon(Icons.Default.Add, contentDescription = "Thêm liên hệ")
                         }
+                    }*/
+                    floatingActionButton = {
+                        Column {
+                            FloatingActionButton(
+                                onClick = { navController.navigate(Route.SendSms) },
+                                modifier = Modifier.padding(bottom = 12.dp)
+                            ) {
+                                Icon(Icons.Default.Send, contentDescription = "Gửi tin nhắn")
+                            }
+
+                            FloatingActionButton(
+                                onClick = { navController.navigate(Route.AddContact) }
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = "Thêm liên hệ")
+                            }
+                        }
                     }
+
+
+
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
 
                         NavHost(navController = navController, startDestination = Route.ContactList) {
+
+                            composable(Route.SendSms) {
+                                SendSmsScreen(
+                                    viewModel = contactViewModel,
+                                    onBack = { navController.popBackStack() }
+                                )
+                            }
+
 
                             composable(Route.ContactList) {
                                 ContactListScreen(
