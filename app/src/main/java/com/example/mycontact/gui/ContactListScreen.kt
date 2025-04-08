@@ -37,7 +37,7 @@ fun ContactListScreen(viewModel: ContactViewModel, navController: NavController,
 
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn {
-            items(filteredContacts) { contactWithPhones ->
+            items(items = filteredContacts, key = {it.contact.id}) { contactWithPhones ->
                 ContactItem(
                     contact = contactWithPhones.contact,
                     phoneList = contactWithPhones.phone.map { it.number },
@@ -50,6 +50,7 @@ fun ContactListScreen(viewModel: ContactViewModel, navController: NavController,
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Khi bấm nhập danh bạ, -> gọi hàm contactViewModel.importSystemContacts(applicationContext)
         Button(
             onClick = onImportContact,
             modifier = Modifier.fillMaxWidth()

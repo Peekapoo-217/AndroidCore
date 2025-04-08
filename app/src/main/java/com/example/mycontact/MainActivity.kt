@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
                 val contactViewModel: ContactViewModel = viewModel(factory = ContactViewModelFactory(application))
 
-
                 // Observe danh bạ từ ViewModel
                 val allContacts by contactViewModel.allContacts.observeAsState(emptyList())
 

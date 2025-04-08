@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.example.mycontact.entities.Contact
 import com.example.mycontact.entities.PhoneNumber
 
-@Database(entities = [Contact::class, PhoneNumber::class], version = 1, exportSchema = false)
+@Database(entities = [Contact::class, PhoneNumber::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class ContactDatabase : RoomDatabase(){
     abstract fun contactDAO() : UserDAO

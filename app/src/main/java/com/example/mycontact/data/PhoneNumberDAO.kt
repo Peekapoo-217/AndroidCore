@@ -10,13 +10,21 @@ import com.example.mycontact.entities.PhoneNumber
 @Dao
 interface PhoneNumberDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(phone: PhoneNumber)
+    suspend fun insert(phoneNumbers: List<PhoneNumber>)
+
     @Query("SELECT * FROM phone_table WHERE contactId = :contactId")
     suspend fun getPhoneNumberByContactId(contactId: Int): List<PhoneNumber>
+
     @Delete
     suspend fun delete(phone: PhoneNumber)
-    @Query("DELETE FROM PHONE_TABLE WHERE contactId = :contactId ")
-    suspend fun deleteAllPhoneForContact(contactId: Int)
+
+    @Query("DELETE FROM phone_table WHERE contactId = :contactId")
+    suspend fun deleteByContactId(contactId: Int)
+
+
+    @Query("DELETE FROM phone_table")
+    suspend fun deleteAllPhoneNumbers()
+
     @Query("SELECT * FROM phone_table WHERE number = :phone LIMIT 1")
     suspend fun findPhoneNumber(phone: String): PhoneNumber?
 

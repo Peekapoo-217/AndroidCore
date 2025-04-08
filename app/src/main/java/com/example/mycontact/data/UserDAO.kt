@@ -17,12 +17,28 @@ interface UserDAO {
     @Transaction
     @Query("SELECT * FROM user_table")
     fun getAllUsers(): Flow<List<ContactWithPhones>>
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(contact: Contact): Long
+
+    @Query("SELECT * FROM user_table")
+    suspend fun getAllRawContacts(): List<Contact>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(contacts: List<Contact>)
+
+    @Insert
+    suspend fun insertOne(contact: Contact): Long
+
     @Update
     suspend fun update(contact: Contact)
+
     @Delete
     suspend fun delete(contact: Contact)
+
+    @Query("DELETE FROM user_table")
+    suspend fun deleteAllContacts()
+
     @Query("SELECT * FROM phone_table WHERE number = :phone")
-    suspend fun findPhoneNumber(phone:String) : PhoneNumber?
+    suspend fun findPhoneNumber(phone: String): PhoneNumber?
+
+
+
 }
